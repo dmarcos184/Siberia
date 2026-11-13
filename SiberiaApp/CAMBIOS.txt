@@ -1,0 +1,261 @@
+=====================================================================
+  SIBERIA APP - MIGRACION DE WINDOWS FORMS A WINUI 3
+  Que se cambio, por que, y como editar el diseño
+=====================================================================
+
+
+1. RESUMEN RAPIDO
+---------------------------------------------------------------------
+- La LOGICA no se toco: las carpetas Models y Services son las mismas
+  (JsonDataService, UsuarioService, MenuService, PedidoService).
+  Los archivos .json que ya tienes (usuarios, menu, pedidos) siguen
+  funcionando igual.
+- Lo que se cambio fue SOLO LA INTERFAZ: se borro la carpeta Forms
+  (LoginForm.cs y MainForm.cs) y Program.cs, y se hizo todo en WinUI 3.
+- Las 6 pestañas siguen existiendo y hacen exactamente lo mismo,
+  pero ahora son 6 paginas separadas con un menu lateral estilo
+  Windows 11.
+- Antes TODO el diseño estaba escrito en C# con coordenadas
+  (Location = new Point(15, 20), Size = new Size(200, 24)...).
+  Ahora el diseño esta en archivos .xaml (parecido a HTML) y el
+  codigo en archivos .xaml.cs. Asi puedes cambiar el diseño sin
+  tocar la logica.
+
+
+2. COMO ABRIRLO Y EJECUTARLO
+---------------------------------------------------------------------
+1) En el "Visual Studio Installer" → Modificar → en "Desarrollo de
+   escritorio de .NET" marca "Herramientas de Windows App SDK" (o la
+   carga "Desarrollo de aplicaciones WinUI" si te aparece aparte).
+2) Abre SiberiaApp.sln.
+3) Arriba, junto al boton de Play, debe decir "x64". WinUI no
+   funciona con "Any CPU" (de todos modos el .csproj ya lo forza a x64).
+4) F5.
+
+Nota: si quieres conservar tus pedidos/usuarios/menu de antes, copia
+la carpeta Data que estaba en:
+   bin\Release\net8.0-windows\Data
+a la nueva carpeta de salida, que ahora es:
+   bin\x64\Debug\net8.0-windows10.0.19041.0\win-x64\Data
+(o la de Release si compilas en Release).
+
+
+3. ARCHIVOS NUEVOS Y QUE HACE CADA UNO
+---------------------------------------------------------------------
+SiberiaApp.csproj
+   - Cambio UseWindowsForms por UseWinUI.
+   - TargetFramework ahora es net8.0-windows10.0.19041.0 (WinUI
+     necesita saber la version de Windows).
+   - Se agrego el paquete Microsoft.WindowsAppSDK (es WinUI 3).
+   - WindowsPackageType=None: la app se genera como un .exe normal,
+     igual que en WinForms (no es una app de la Microsoft Store).
+     Gracias a esto la carpeta Data se sigue creando junto al .exe.
+   - WindowsAppSDKSelfContained=true: el .exe lleva todo lo necesario,
+     no tienes que instalar nada extra en la PC donde lo corras.
+
+App.xaml / App.xaml.cs   (reemplaza a Program.cs)
+   - Es donde arranca la app. Abre la ventana principal.
+   - App.UsuarioActual guarda quien inicio sesion (antes se pasaba
+     por el constructor de MainForm).
+   - En App.xaml estan los ESTILOS de toda la app (ver seccion 6).
+
+MainWindow.xaml / .cs
+   - Es la unica ventana. Tiene el fondo Mica (el efecto translucido
+     de Windows 11), la barra de titulo y un Frame donde se muestra
+     el Login o el menu principal.
+   - Aqui se define el tamaño inicial (AnchoInicial / AltoInicial).
+
+Views/LoginPage          (antes LoginForm)
+Views/ShellPage          (antes MainForm con su TabControl)
+Views/NuevaOrdenPage     (pestaña 1)
+Views/MenuPage           (pestaña 2)
+Views/ConsultarPedidosPage (pestaña 3)
+Views/ActualizarPedidoPage (pestaña 4)
+Views/ReportesPage       (pestaña 5)
+Views/UsuariosPage       (pestaña 6)
+   Cada una tiene 2 archivos:
+   - .xaml    → el DISEÑO (que controles hay y donde)
+   - .xaml.cs → el CODIGO (los clicks, validaciones, etc.)
+
+Helpers/Avisos.cs
+   - Reemplaza a MessageBox.Show. Tiene:
+     Avisos.Mostrar(barra, "mensaje")      → aviso amarillo
+     Avisos.Exito(barra, "mensaje")        → aviso verde
+     Avisos.ConfirmarAsync(...)            → ventanita Si / No
+
+Helpers/Formato.cs
+   - Funciones para mostrar dinero ($85.00) y Si/No en las tablas.
+
+Models/FilaPedido.cs
+   - Antes, para llenar los DataGridView de pedidos se usaba un objeto
+     anonimo: .Select(p => new { p.Folio, p.Cliente, ... }).
+     En WinUI el XAML necesita una clase con nombre, asi que se creo
+     FilaPedido con esas mismas columnas. No se guarda en el JSON.
+
+SiberiaApp.sln, app.manifest, Properties/launchSettings.json
+   - Archivos que necesita Visual Studio / WinUI para compilar y
+     ejecutar. No necesitas moverles.
+
+
+4. EQUIVALENCIAS DE CONTROLES (WinForms → WinUI)
+---------------------------------------------------------------------
+   Form                  → Window / Page
+   TabControl / TabPage  → NavigationView (menu lateral) + paginas
+   Label                 → TextBlock
+   TextBox               → TextBox  (ahora con Header = la etiqueta)
+   TextBox con password  → PasswordBox   (.Text ahora es .Password)
+   ComboBox              → ComboBox
+   ComboBox editable     → ComboBox con IsEditable="True"
+   NumericUpDown         → NumberBox     (.Value ahora es double)
+   CheckBox              → ToggleSwitch  (.Checked ahora es .IsOn)
+   DateTimePicker        → CalendarDatePicker (.Value ahora es .Date)
+   DataGridView          → ListView con encabezados (ver seccion 7)
+   ListBox               → ListView
+   Button                → Button
+   MessageBox.Show       → InfoBar (barra de aviso) y ContentDialog
+   AcceptButton (Enter)  → evento KeyDown que revisa la tecla Enter
+
+   Tambien:
+   - txt.Clear()            → txt.Text = string.Empty
+   - control.Enabled        → control.IsEnabled
+   - dgv.CurrentRow...      → lista.SelectedItem
+   - dgv.DataSource = ...   → lista.ItemsSource = ...
+   - Evento Click           → Click="Nombre_Click" en el XAML
+
+   Los nombres de los controles se dejaron IGUAL que en WinForms
+   (txtCliente, cmbTipoPedido, dgvOrden, lblTotalOrden, etc.) para
+   que puedas comparar el codigo viejo con el nuevo facilmente.
+
+
+5. CAMBIOS PEQUEÑOS DE COMPORTAMIENTO
+---------------------------------------------------------------------
+Casi todo funciona igual. Lo unico distinto:
+
+- Los mensajes ya no son ventanitas que hay que cerrar: aparecen
+  como una barra arriba de la pagina (verde = exito, amarilla =
+  aviso). La unica ventanita que queda es la de "¿Eliminar este
+  producto?" porque ahi si necesitas confirmar.
+- Las categorias del Menu antes estaban fijas ("Nieves", "Malteadas"...)
+  y no coincidian con tu menu (Tostada, Taco...). Ahora la lista sale
+  de las categorias que ya existen en tu menu, y puedes escribir una
+  nueva.
+- El precio del menu ahora es un NumberBox (solo acepta numeros).
+- Al cambiarte de pestaña y regresar, lo que estabas capturando en
+  "Nueva orden" se queda ahi (igual que con las pestañas de antes),
+  y las tablas se actualizan solas al entrar (ya no hace falta que
+  una pestaña refresque a otra).
+- En Reportes ahora se muestra que dia o que semana estas viendo.
+- En el menu lateral hay "Cerrar sesion" para regresar al login.
+- En Consultar pedidos, presionar Enter en la caja de busqueda
+  tambien busca.
+- El ticket de "Consultar pedidos" ahora esta a la derecha de la
+  tabla en vez de abajo.
+
+
+6. COMO CAMBIAR EL DISEÑO (COLORES, TAMAÑOS, ESPACIOS)
+---------------------------------------------------------------------
+TODO lo que se repite esta en App.xaml, en la parte de
+"ESTILOS PROPIOS DE LA APP". Si cambias algo ahi, cambia en todas
+las pantallas:
+
+   Tarjeta            → los recuadros redondeados (fondo, borde,
+                        CornerRadius = que tan redondo, Padding =
+                        espacio interno)
+   EncabezadoColumna  → texto de los titulos de columnas de tablas
+   FilaEncabezado     → la fila de titulos de las tablas
+   TextoCelda         → texto de cada celda de las tablas
+   TituloTarjeta      → titulo de cada tarjeta ("Datos del cliente")
+   CajaTicket         → la caja del ticket (letra Consolas)
+
+Ejemplo: para que las tarjetas sean mas redondas, en App.xaml cambia
+   <Setter Property="CornerRadius" Value="8" />
+por
+   <Setter Property="CornerRadius" Value="12" />
+
+Los colores usan "ThemeResource" (por ejemplo
+AccentTextFillColorPrimaryBrush). Esos colores cambian solos si Windows
+esta en modo claro u oscuro, y usan el color de enfasis de Windows.
+Si quieres un color fijo, puedes poner directamente, por ejemplo:
+   Foreground="#0066CC"
+
+Dentro de cada pagina .xaml el acomodo se hace con:
+   Grid        → filas y columnas (RowDefinitions / ColumnDefinitions).
+                 Width="*" = ocupa el espacio que sobra,
+                 Width="Auto" = lo que mida el contenido,
+                 Width="380" = tamaño fijo.
+   StackPanel  → pone cosas una tras otra (vertical u horizontal).
+                 Spacing = separacion entre ellas.
+   Padding / Margin → espacio por dentro / por fuera.
+
+
+7. COMO FUNCIONAN LAS TABLAS (antes DataGridView)
+---------------------------------------------------------------------
+WinUI 3 no trae un DataGridView. Lo que se usa (y lo que muestra
+WinUI Gallery) es un ListView con una plantilla. Cada tabla tiene:
+
+   a) Una fila de encabezados (Grid con Style="FilaEncabezado")
+   b) Un ListView con un DataTemplate que dibuja cada fila
+
+IMPORTANTE: las ColumnDefinitions de (a) y de (b) deben ser IGUALES
+para que los titulos queden alineados con los datos.
+
+Para AGREGAR una columna, por ejemplo "Usuario que creo" en
+Consultar pedidos:
+   1) En Models/FilaPedido.cs agrega:  public string Usuario { get; set; }
+      y en Desde(...) agrega:          Usuario = p.UsuarioCreo,
+   2) En ConsultarPedidosPage.xaml agrega una <ColumnDefinition>
+      en los DOS Grid (encabezado y plantilla), un TextBlock de titulo
+      en el encabezado, y en la plantilla:
+         <TextBlock Grid.Column="6" Text="{x:Bind Usuario}"
+                    Style="{StaticResource TextoCelda}" />
+
+{x:Bind Nombre} significa "muestra la propiedad Nombre del objeto de
+esta fila".
+
+
+8. COMO USAR WINUI GALLERY PARA MODIFICARLO
+---------------------------------------------------------------------
+1) Instala "WinUI 3 Gallery" desde la Microsoft Store (gratis).
+2) Busca el control que quieres (por ejemplo "InfoBar", "NumberBox",
+   "ToggleSwitch", "CalendarDatePicker", "NavigationView").
+3) Cada ejemplo tiene abajo el codigo XAML y C#. Copias el XAML y lo
+   pegas en el .xaml de la pagina que quieras.
+4) Si el control tiene x:Name, desde el .xaml.cs lo usas con ese
+   nombre (igual que en WinForms).
+
+Controles de Gallery que ya usa la app (para que los busques):
+   NavigationView, InfoBar, ContentDialog, TextBox, PasswordBox,
+   ComboBox, NumberBox, ToggleSwitch, CalendarDatePicker, ListView,
+   Button (con AccentButtonStyle), PersonPicture, SymbolIcon,
+   FontIcon, MicaBackdrop.
+
+Iconos: en el menu lateral se usan nombres como Icon="Add",
+Icon="Shop", Icon="People". En Gallery, en "Iconography" →
+"Segoe Fluent Icons" puedes ver todos y copiar el Glyph, por ejemplo:
+   <FontIcon Glyph="&#xE7BF;" />
+
+Hot Reload: con la app corriendo (F5) puedes cambiar el .xaml y
+guardar, y el cambio se ve sin cerrar la app. Muy util para probar
+colores y espacios.
+
+
+9. COMO AGREGAR UNA PANTALLA NUEVA
+---------------------------------------------------------------------
+1) Clic derecho en la carpeta Views → Agregar → Nuevo elemento →
+   "Pagina en blanco (WinUI 3)". Ponle nombre, por ej. ClientesPage.
+2) En Views/ShellPage.xaml agrega en MenuItems:
+   <NavigationViewItem Content="Clientes" Tag="Clientes" Icon="Contact" />
+3) En Views/ShellPage.xaml.cs agrega en el switch:
+   "Clientes" => typeof(ClientesPage),
+
+
+10. SI ALGO NO COMPILA
+---------------------------------------------------------------------
+- "The platform 'AnyCPU' is not supported" → cambia arriba a x64.
+- Error de que no encuentra WinUI / Windows App SDK → falta instalar
+  las herramientas de WinUI en el Visual Studio Installer (paso 2).
+- Si cambiaste un .xaml y dice que un control "no existe en el
+  contexto actual", revisa que el x:Name en el .xaml este bien escrito,
+  y recompila (Compilar → Recompilar solucion).
+
+=====================================================================

@@ -1,0 +1,12 @@
+App.xbf
+MainWindow.xbf
+Views\ActualizarPedidoPage.xbf
+Views\ConsultarPedidosPage.xbf
+Views\CortesPage.xbf
+Views\DashboardPage.xbf
+Views\LoginPage.xbf
+Views\MenuPage.xbf
+Views\NuevaOrdenPage.xbf
+Views\ReportesPage.xbf
+Views\ShellPage.xbf
+Views\UsuariosPage.xbf

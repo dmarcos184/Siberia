@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="SiberiaApp.Views.ShellPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Menu lateral de Windows 11 (reemplaza al TabControl de WinForms).
+        PaneDisplayMode="Auto": con la ventana ancha el menu se ve completo; si la ventana se hace
+        mas angosta se reduce a solo iconos (y a un boton de hamburguesa si es muy pequeña).
+
+        Para agregar una pantalla nueva:
+          1. Crea la pagina en la carpeta Views
+          2. Agrega un NavigationViewItem aqui con un Tag
+          3. Agrega ese Tag en el "switch" de ShellPage.xaml.cs
+          4. Si es solo para administradores, agrega su Tag en SoloAdministrador (ShellPage.xaml.cs)
+    -->
+    <NavigationView x:ConnectionId='2' x:Name="NavView"
+                    PaneDisplayMode="Auto"
+                    OpenPaneLength="250"
+                    IsBackButtonVisible="Collapsed"
+                    IsSettingsVisible="False"
+                    IsTitleBarAutoPaddingEnabled="False"
+                                                               
+                                                     >
+
+        <!-- Quien esta conectado -->
+        <NavigationView.PaneHeader>
+            <StackPanel Orientation="Horizontal" Spacing="10" Margin="12,8,0,8">
+                <PersonPicture x:ConnectionId='3' x:Name="fotoUsuario" Width="36" Height="36" />
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock x:ConnectionId='4' x:Name="txtNombreNav" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBlock x:ConnectionId='5' x:Name="txtRolNav"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+            </StackPanel>
+        </NavigationView.PaneHeader>
+
+        <NavigationView.MenuItems>
+            <NavigationViewItem x:ConnectionId='6' x:Name="itemPanel" Content="Panel" Tag="Panel" Icon="Home" />
+            <NavigationViewItem x:ConnectionId='7' x:Name="itemNuevaOrden" Content="Nueva orden" Tag="NuevaOrden" Icon="Add" />
+            <NavigationViewItem Content="Consultar pedidos" Tag="Consultar" Icon="Find" />
+            <NavigationViewItem Content="Actualizar pedido" Tag="Actualizar" Icon="Edit" />
+            <NavigationViewItem Content="Cortes de caja" Tag="Cortes" Icon="Calculator" />
+            <NavigationViewItem Content="Reportes" Tag="Reportes" Icon="Calendar" />
+            <NavigationViewItemSeparator x:ConnectionId='8' x:Name="separadorAdmin" />
+            <NavigationViewItem x:ConnectionId='9' x:Name="itemMenu" Content="Menú y precios" Tag="Menu" Icon="Shop" />
+            <NavigationViewItem x:ConnectionId='10' x:Name="itemUsuarios" Content="Usuarios" Tag="Usuarios" Icon="People" />
+        </NavigationView.MenuItems>
+
+        <NavigationView.FooterMenuItems>
+            <!-- SelectsOnInvoked=False: no se queda "seleccionado", solo ejecuta la accion -->
+            <NavigationViewItem x:ConnectionId='11' x:Name="itemCerrarSesion"
+                                Content="Cerrar sesión"
+                                Tag="Salir"
+                                SelectsOnInvoked="False">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xF3B1;" />
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+        </NavigationView.FooterMenuItems>
+
+        <!-- Aqui se carga cada pantalla -->
+        <Frame x:ConnectionId='12' x:Name="ContentFrame" />
+    </NavigationView>
+</Page>
+

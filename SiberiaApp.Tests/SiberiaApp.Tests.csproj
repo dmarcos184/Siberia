@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Pruebas automaticas de la LOGICA de SiberiaApp (usuarios, permisos, pedidos, notas, cortes, reportes
+    y almacenamiento JSON). No abre ventanas: enlaza los archivos de Models, Services y Formato.cs
+    del proyecto principal y los compila como net8.0 normal, asi corren con:
+
+        dotnet test SiberiaApp.Tests
+
+    Cada prueba usa una carpeta temporal propia: NUNCA toca tu carpeta Data real.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>SiberiaApp.Tests</RootNamespace>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\SiberiaApp\Models\*.cs" LinkBase="Fuente\Models" />
+    <Compile Include="..\SiberiaApp\Services\*.cs" LinkBase="Fuente\Services" />
+    <Compile Include="..\SiberiaApp\Helpers\Formato.cs" LinkBase="Fuente\Helpers" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="SiberiaApp.Views.UsuariosPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:SiberiaApp.Models"
+    xmlns:helpers="using:SiberiaApp.Helpers"
+    NavigationCacheMode="Required">
+
+    <Grid Padding="24,0,24,24" ColumnSpacing="16" RowSpacing="12">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="360" />
+            <ColumnDefinition Width="380" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <InfoBar x:Name="barraAviso" Grid.Row="0" Grid.ColumnSpan="2" IsOpen="False" />
+
+        <!-- ===== Lista de usuarios ===== -->
+        <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource Tarjeta}" Padding="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Usuarios registrados"
+                           Style="{StaticResource TituloTarjeta}"
+                           Margin="16,16,16,8" />
+
+                <ListView x:Name="lstUsuarios" Grid.Row="1"
+                          SelectionMode="Single"
+                          SelectionChanged="LstUsuarios_SelectionChanged">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Usuario">
+                            <Grid ColumnSpacing="12" Padding="0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <PersonPicture DisplayName="{x:Bind NombreUsuario}" Width="32" Height="32" />
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="{x:Bind NombreUsuario}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                                    <TextBlock Text="{x:Bind Rol}"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                    <TextBlock Text="{x:Bind helpers:Formato.ActivoTexto(Activo)}"
+                                               Foreground="{x:Bind helpers:Vista.ColorActivo(Activo)}"
+                                               FontWeight="SemiBold" TextAlignment="Right" />
+                                    <TextBlock Text="Debe cambiar contraseña"
+                                               Style="{StaticResource EtiquetaIndicador}" TextAlignment="Right"
+                                               Visibility="{x:Bind helpers:Vista.Visible(DebeCambiarPassword)}" />
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </Border>
+
+        <!-- ===== Formulario: nuevo usuario / editar usuario ===== -->
+        <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource Tarjeta}" VerticalAlignment="Top">
+            <StackPanel Spacing="12">
+                <TextBlock x:Name="lblModoUsuario" Text="Nuevo usuario" Style="{StaticResource TituloTarjeta}" />
+
+                <TextBox x:Name="txtNuevoUsuario" Header="Usuario"
+                         PlaceholderText="3 a 30 caracteres" MaxLength="30" />
+
+                <!-- La contraseña solo se captura al crear; despues se usa "Restablecer contraseña" -->
+                <PasswordBox x:Name="txtNuevaPassword" Header="Contraseña temporal"
+                             PlaceholderText="Mínimo 6 caracteres, sin espacios" MaxLength="64" />
+
+                <ComboBox x:Name="cmbNuevoRol" Header="Rol" HorizontalAlignment="Stretch" SelectedIndex="0">
+                    <x:String>Cajero</x:String>
+                    <x:String>Administrador</x:String>
+                </ComboBox>
+
+                <ToggleSwitch x:Name="chkUsuarioActivo"
+                              Header="Cuenta activa (puede iniciar sesión)"
+                              OnContent="Sí" OffContent="No" IsOn="True" />
+
+                <TextBlock x:Name="lblAyudaUsuario"
+                           Style="{StaticResource NotaIndicador}" />
+
+                <Button x:Name="btnCrearUsuario"
+                        Content="Crear usuario"
+                        Style="{StaticResource AccentButtonStyle}"
+                        HorizontalAlignment="Stretch"
+                        Click="BtnCrearUsuario_Click" />
+
+                <Button x:Name="btnGuardarUsuario"
+                        Content="Guardar cambios"
+                        Style="{StaticResource AccentButtonStyle}"
+                        HorizontalAlignment="Stretch"
+                        Visibility="Collapsed"
+                        Click="BtnGuardarUsuario_Click" />
+
+                <Grid x:Name="panelAccionesUsuario" ColumnSpacing="8" Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Content="Restablecer contraseña" HorizontalAlignment="Stretch"
+                            Click="BtnRestablecer_Click" />
+                    <Button Grid.Column="1" Content="Eliminar" HorizontalAlignment="Stretch"
+                            Click="BtnEliminarUsuario_Click" />
+                </Grid>
+
+                <Button x:Name="btnNuevoUsuario"
+                        Content="Nuevo usuario (limpiar)"
+                        HorizontalAlignment="Stretch"
+                        Visibility="Collapsed"
+                        Click="BtnNuevoUsuario_Click" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</Page>

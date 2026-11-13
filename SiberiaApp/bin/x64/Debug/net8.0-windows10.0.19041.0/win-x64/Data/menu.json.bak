@@ -1,0 +1,74 @@
+[
+  {
+    "Id": 1,
+    "Nombre": "Tostada Especial",
+    "Categoria": "Tostada",
+    "Precio": 85.0,
+    "Costo": null,
+    "Activo": true
+  },
+  {
+    "Id": 2,
+    "Nombre": "Tostada Sencilla",
+    "Categoria": "Tostada",
+    "Precio": 75.0,
+    "Costo": null,
+    "Activo": true
+  },
+  {
+    "Id": 3,
+    "Nombre": "Tostada Especial Junior",
+    "Categoria": "Tostada Jr",
+    "Precio": 60.0,
+    "Costo": null,
+    "Activo": true
+  },
+  {
+    "Id": 4,
+    "Nombre": "Tostada Sencilla Junior",
+    "Categoria": "Tostada Jr",
+    "Precio": 57.0,
+    "Costo": null,
+    "Activo": true
+  },
+  {
+    "Id": 5,
+    "Nombre": "Taco Especial",
+    "Categoria": "Taco",
+    "Precio": 75.0,
+    "Costo": null,
+    "Activo": true
+  },
+  {
+    "Id": 6,
+    "Nombre": "Taco Sencillo",
+    "Categoria": "Taco",
+    "Precio": 65.0,
+    "Costo": null,
+    "Activo": true
+  },
+  {
+    "Id": 7,
+    "Nombre": "Taco Especial Junior",
+    "Categoria": "Taco Jr",
+    "Precio": 50.0,
+    "Costo": null,
+    "Activo": true
+  },
+  {
+    "Id": 8,
+    "Nombre": "Taco Sencillo Junior",
+    "Categoria": "Taco Jr",
+    "Precio": 47.0,
+    "Costo": null,
+    "Activo": true
+  },
+  {
+    "Id": 10,
+    "Nombre": "Ensalada Pollo",
+    "Categoria": "Ensalada",
+    "Precio": 125.0,
+    "Costo": null,
+    "Activo": true
+  }
+]

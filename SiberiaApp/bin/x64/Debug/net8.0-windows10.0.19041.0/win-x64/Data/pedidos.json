@@ -1,0 +1,190 @@
+[
+  {
+    "Id": 1,
+    "Folio": "SIB-20261109-0001",
+    "Cliente": "Aldo",
+    "TipoPedido": "Mostrador",
+    "Direccion": "",
+    "Telefono": "",
+    "FechaHora": "2026-11-09T18:14:07.1374201-06:00",
+    "Detalles": [
+      {
+        "MenuItemId": 10,
+        "NombreProducto": "Ensalada Pollo",
+        "PrecioUnitario": 125.0,
+        "Cantidad": 1,
+        "CostoUnitario": null,
+        "Notas": [
+          {
+            "Cantidad": 1,
+            "Texto": "Sin Verdura"
+          }
+        ],
+        "Subtotal": 125.0
+      },
+      {
+        "MenuItemId": 7,
+        "NombreProducto": "Taco Especial Junior",
+        "PrecioUnitario": 50.0,
+        "Cantidad": 1,
+        "CostoUnitario": null,
+        "Notas": [
+          {
+            "Cantidad": 1,
+            "Texto": "sin crema"
+          }
+        ],
+        "Subtotal": 50.0
+      }
+    ],
+    "Estado": "Entregado",
+    "UsuarioCreo": "Jorge Gomez",
+    "UsuarioId": 2,
+    "CorteId": 1,
+    "MetodoPago": "Tarjeta",
+    "Descuento": 0.0,
+    "MontoDevuelto": 0.0,
+    "MotivoDevolucion": "",
+    "DevueltoPor": "",
+    "FechaDevolucion": null,
+    "Subtotal": 175.0,
+    "Total": 175.0
+  },
+  {
+    "Id": 2,
+    "Folio": "SIB-20261109-0002",
+    "Cliente": "Carlos",
+    "TipoPedido": "Mostrador",
+    "Direccion": "",
+    "Telefono": "",
+    "FechaHora": "2026-11-09T18:14:39.3296782-06:00",
+    "Detalles": [
+      {
+        "MenuItemId": 5,
+        "NombreProducto": "Taco Especial",
+        "PrecioUnitario": 75.0,
+        "Cantidad": 1,
+        "CostoUnitario": null,
+        "Notas": [],
+        "Subtotal": 75.0
+      },
+      {
+        "MenuItemId": 7,
+        "NombreProducto": "Taco Especial Junior",
+        "PrecioUnitario": 50.0,
+        "Cantidad": 1,
+        "CostoUnitario": null,
+        "Notas": [],
+        "Subtotal": 50.0
+      },
+      {
+        "MenuItemId": 6,
+        "NombreProducto": "Taco Sencillo",
+        "PrecioUnitario": 65.0,
+        "Cantidad": 2,
+        "CostoUnitario": null,
+        "Notas": [],
+        "Subtotal": 130.0
+      },
+      {
+        "MenuItemId": 1,
+        "NombreProducto": "Tostada Especial",
+        "PrecioUnitario": 85.0,
+        "Cantidad": 1,
+        "CostoUnitario": null,
+        "Notas": [],
+        "Subtotal": 85.0
+      }
+    ],
+    "Estado": "Entregado",
+    "UsuarioCreo": "Jorge Gomez",
+    "UsuarioId": 2,
+    "CorteId": 1,
+    "MetodoPago": "Efectivo",
+    "Descuento": 0.0,
+    "MontoDevuelto": 0.0,
+    "MotivoDevolucion": "",
+    "DevueltoPor": "",
+    "FechaDevolucion": null,
+    "Subtotal": 340.0,
+    "Total": 340.0
+  },
+  {
+    "Id": 3,
+    "Folio": "SIB-20261109-0003",
+    "Cliente": "Ulises",
+    "TipoPedido": "Mostrador",
+    "Direccion": "",
+    "Telefono": "",
+    "FechaHora": "2026-11-09T18:14:58.4282662-06:00",
+    "Detalles": [
+      {
+        "MenuItemId": 5,
+        "NombreProducto": "Taco Especial",
+        "PrecioUnitario": 75.0,
+        "Cantidad": 1,
+        "CostoUnitario": null,
+        "Notas": [],
+        "Subtotal": 75.0
+      },
+      {
+        "MenuItemId": 8,
+        "NombreProducto": "Taco Sencillo Junior",
+        "PrecioUnitario": 47.0,
+        "Cantidad": 1,
+        "CostoUnitario": null,
+        "Notas": [],
+        "Subtotal": 47.0
+      }
+    ],
+    "Estado": "Entregado",
+    "UsuarioCreo": "Jorge Gomez",
+    "UsuarioId": 2,
+    "CorteId": 1,
+    "MetodoPago": "Transferencia",
+    "Descuento": 0.0,
+    "MontoDevuelto": 0.0,
+    "MotivoDevolucion": "",
+    "DevueltoPor": "",
+    "FechaDevolucion": null,
+    "Subtotal": 122.0,
+    "Total": 122.0
+  },
+  {
+    "Id": 4,
+    "Folio": "SIB-20261109-0004",
+    "Cliente": "Aldo",
+    "TipoPedido": "Mostrador",
+    "Direccion": "",
+    "Telefono": "",
+    "FechaHora": "2026-11-09T20:38:06.260257-06:00",
+    "Detalles": [
+      {
+        "MenuItemId": 1,
+        "NombreProducto": "Tostada Especial",
+        "PrecioUnitario": 85.0,
+        "Cantidad": 4,
+        "CostoUnitario": 52.0,
+        "Notas": [
+          {
+            "Cantidad": 3,
+            "Texto": "sin crema"
+          }
+        ],
+        "Subtotal": 340.0
+      }
+    ],
+    "Estado": "Entregado",
+    "UsuarioCreo": "Jorge Gomez",
+    "UsuarioId": 2,
+    "CorteId": 0,
+    "MetodoPago": "Tarjeta",
+    "Descuento": 0.0,
+    "MontoDevuelto": 0.0,
+    "MotivoDevolucion": "",
+    "DevueltoPor": "",
+    "FechaDevolucion": null,
+    "Subtotal": 340.0,
+    "Total": 340.0
+  }
+]

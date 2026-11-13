@@ -1,0 +1,34 @@
+[
+  {
+    "Id": 1,
+    "UsuarioId": 2,
+    "NombreUsuario": "Jorge Gomez",
+    "Fecha": "2026-11-09T00:00:00-06:00",
+    "Estado": "Cerrado",
+    "TotalPedidos": 3,
+    "PedidosCancelados": 0,
+    "TotalVentas": 637.0,
+    "MontoCancelado": 0.0,
+    "TotalDescuentos": 0.0,
+    "TotalDevoluciones": 0.0,
+    "TotalNeto": 637.0,
+    "VentasEfectivo": 340.0,
+    "VentasTarjeta": 175.0,
+    "VentasTransferencia": 122.0,
+    "VentasSinMetodo": 0.0,
+    "Costo": 0.0,
+    "VentasConCosto": 0.0,
+    "PedidosConCosto": 0,
+    "PedidoIds": [
+      1,
+      2,
+      3
+    ],
+    "Observaciones": "",
+    "FechaCierre": "2026-11-09T18:16:13.2415961-06:00",
+    "CerradoPor": "Jorge Gomez",
+    "ReabiertoPor": "",
+    "FechaReapertura": null,
+    "MotivoReapertura": ""
+  }
+]

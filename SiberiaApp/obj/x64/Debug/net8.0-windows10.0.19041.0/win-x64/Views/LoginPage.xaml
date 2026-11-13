@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="SiberiaApp.Views.LoginPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" MinWidth="380" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Si la ventana es angosta, el panel de marca se oculta y solo queda el formulario -->
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:ConnectionId='2' x:Name="VentanaAncha">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="860" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="panelMarca.Visibility" Value="Visible" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:ConnectionId='3' x:Name="VentanaAngosta" />
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <!-- ===== Panel de marca ===== -->
+        <Grid x:ConnectionId='4' x:Name="panelMarca" Grid.Column="0" Visibility="Collapsed"
+              Background="{ThemeResource AccentFillColorDefaultBrush}">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="12" Padding="32">
+                <FontIcon Glyph="&#xE7BF;" FontSize="56"
+                          Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" />
+                <TextBlock Text="SIBERIA"
+                           Style="{StaticResource DisplayTextBlockStyle}"
+                           Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" />
+                <TextBlock Text="Pedidos, ventas y cortes de caja"
+                           Style="{StaticResource SubtitleTextBlockStyle}"
+                           Foreground="{ThemeResource TextOnAccentFillColorSecondaryBrush}" />
+            </StackPanel>
+        </Grid>
+
+        <!-- ===== Formulario ===== -->
+        <Grid Grid.Column="1">
+            <StackPanel Width="340" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16">
+
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Iniciar sesión" Style="{StaticResource TitleTextBlockStyle}" />
+                    <TextBlock Text="Escribe tu usuario y contraseña para continuar."
+                               Style="{StaticResource BodyTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+
+                <TextBox x:ConnectionId='5' x:Name="txtUsuario"
+                         Header="Usuario"
+                         PlaceholderText="Escribe tu usuario"
+                         MaxLength="30" />
+
+                <PasswordBox x:ConnectionId='6' x:Name="txtPassword"
+                             Header="Contraseña"
+                             PlaceholderText="Escribe tu contraseña"
+                             MaxLength="64"
+                                                           />
+
+                <Button x:ConnectionId='7' x:Name="btnIngresar"
+                        Style="{StaticResource AccentButtonStyle}"
+                        HorizontalAlignment="Stretch"
+                                                 >
+                    <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                        <ProgressRing x:ConnectionId='9' x:Name="anilloCarga" Width="16" Height="16" IsActive="False" Visibility="Collapsed" />
+                        <TextBlock x:ConnectionId='10' x:Name="txtBotonIngresar" Text="Ingresar" />
+                    </StackPanel>
+                </Button>
+
+                <!-- Mensaje (oculto hasta que falla el login o hay un aviso al abrir la app) -->
+                <InfoBar x:ConnectionId='8' x:Name="lblMensaje"
+                         Severity="Error"
+                         Title="No se pudo iniciar sesión"
+                         Message="Usuario o contraseña incorrectos."
+                         IsClosable="False"
+                         IsOpen="False" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Page>
+

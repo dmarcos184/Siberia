@@ -1,0 +1,77 @@
+=====================================================================
+  SIBERIA APP - MEJORA INTEGRAL (roles, cortes de caja, notas, panel)
+=====================================================================
+
+COMO PROBARLO
+  1) Abre SiberiaApp.sln en Visual Studio, plataforma x64, F5 (igual que antes).
+  2) Si ya tenias datos: copia tu carpeta Data a la carpeta de salida. Al abrir, la app
+     migra sola usuarios.json (contraseñas -> hash) y pedidos.json (liga cada pedido a su usuario).
+     Se recomienda copiar Data como respaldo antes de la primera vez.
+  3) Pruebas automaticas (logica, sin ventanas):   dotnet test SiberiaApp.Tests
+
+QUE CAMBIO
+
+  SEGURIDAD / DATOS
+  - Contraseñas con hash PBKDF2 (ya no se guardan en texto plano). Bloqueo 30 s tras 5 fallos.
+  - SesionService: cada operacion protegida vuelve a comprobar en el archivo que el usuario
+    existe, esta activo y tiene el rol. No depende de ocultar botones.
+  - JsonDataService: escritura atomica (.tmp + reemplazo), copia .bak, transacciones con candado
+    y Mutex (dos ventanas no se pisan). Un .json dañado ya NO se lee como "vacio" (antes el
+    siguiente guardado borraba todo): se recupera del .bak o se avisa sin tocar el archivo.
+
+  USUARIOS Y ROLES (Cajero = usuario normal, Administrador)
+  - Admin: crear, editar, activar/desactivar, restablecer contraseña, eliminar (solo si no tiene
+    historial), ver pedidos/cortes/ventas de cualquiera, panel general.
+  - Usuario normal: solo sus pedidos, sus ventas, sus cortes. Menu y precios, Usuarios y Panel son
+    solo de administrador.
+  - Siempre debe quedar un administrador activo; nadie se desactiva/elimina a si mismo.
+
+  PEDIDOS
+  - El servicio recalcula precio, costo y total desde el menu (decimal). Rechaza: sin productos,
+    cantidad <= 0 o > 10, producto inexistente/desactivado, precio negativo o distinto al del menu,
+    total mostrado distinto al calculado, pedidos duplicados (doble clic), ventas en un dia con corte cerrado.
+  - Pedido Entregado/Cancelado: solo lo modifica un administrador. Si su dia ya tiene corte cerrado,
+    nadie hasta que se reabra el corte.
+  - NOTAS POR PRODUCTO: "4 tostadas: 1 sin crema, 2 con extra de aguacate". Se editan antes de guardar,
+    se ven en el carrito, el ticket, Consultar, Reportes y Cortes, y se guardan en el historial.
+    Pedidos viejos sin notas siguen funcionando.
+  - Un producto ya vendido no se elimina (se desactiva) para no perder historial.
+
+  CORTES DE CAJA (pantalla nueva)
+  - Uno por usuario y por dia con pedidos propios. No se pueden cortar dias sin pedidos, fechas
+    futuras, dias con pedidos sin finalizar, dias de otro usuario (usuario normal) ni duplicar un corte.
+  - Cierre: pedidos quedan ligados al corte y bloqueados. Admin puede reabrir con motivo (queda auditado).
+  - Ventas vs. cancelaciones vs. neto: lo cancelado no es ingreso.
+
+  FORMA DE PAGO, DESCUENTOS Y DEVOLUCIONES (agregado despues)
+  - Cada pedido nuevo guarda su forma de pago (Efectivo / Tarjeta / Transferencia). Los pedidos
+    anteriores quedan como "Sin registrar": no se les inventa un metodo.
+  - Descuento en pesos al tomar el pedido: no negativo, solo centavos, no mayor al importe. Un cajero
+    puede dar hasta DescuentoMaximoCajeroPorcentaje (10%, constante en PedidoService.cs); el administrador
+    hasta el importe completo.
+  - Devoluciones: solo administrador, solo pedidos Entregados, parciales y acumulables sin pasar del total
+    cobrado, con motivo. No se permiten en un dia con corte cerrado (hay que reabrirlo).
+    Un pedido con devolucion ya no se puede cancelar.
+  - El corte y los reportes separan: ventas, cancelaciones, devoluciones, descuentos y el ingreso NETO por
+    forma de pago (la suma por metodo siempre cuadra con el neto).
+  - Compatibilidad JSON: solo se AGREGAN campos (MetodoPago, Descuento, MontoDevuelto, MotivoDevolucion,
+    DevueltoPor, FechaDevolucion en pedidos; descuentos, devoluciones y desglose por metodo en cortes).
+    Los archivos anteriores se leen igual; no hace falta migrar nada.
+
+  GANANCIAS
+  - Costo por producto OPCIONAL en Menu y precios. La utilidad solo se calcula con pedidos cuyos productos
+    tenian costo al venderse; si faltan costos la pantalla lo dice (no se inventa nada).
+
+  INTERFAZ
+  - Login con panel de marca e indicador de carga; menu lateral adaptable y por rol.
+  - Panel del administrador: ventas hoy/semana/mes con comparacion, ganancia, pedidos en curso,
+    cortes pendientes, usuarios activos, grafica de 7 dias, mas vendidos.
+  - Nueva orden estilo POS: catalogo con busqueda y categorias, un toque agrega, +/− y notas por renglon.
+  - Reportes por dia/semana/mes/personalizado; Usuarios con edicion completa; confirmaciones en acciones importantes.
+
+LIMITACIONES CONOCIDAS
+  - Las devoluciones son por monto (no por producto): no regresan el producto al inventario (no hay inventario).
+  - El efectivo del corte es lo que el SISTEMA registro; no hay captura de "efectivo contado en caja".
+  - Las notas de un pedido ya guardado no se editan despues (solo antes de guardar).
+  - Sigue siendo JSON (suficiente para una o pocas cajas en la misma PC). No es para varias PCs en red.
+  - Semana = domingo a sabado (misma regla que ya tenia el reporte semanal).

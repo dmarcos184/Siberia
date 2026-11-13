@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="SiberiaApp.Views.MenuPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:SiberiaApp.Models"
+    xmlns:helpers="using:SiberiaApp.Helpers"
+    NavigationCacheMode="Required">
+
+    <Grid Padding="24,0,24,24" ColumnSpacing="16" RowSpacing="12">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="360" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <InfoBar x:Name="barraAviso" Grid.Row="0" Grid.ColumnSpan="2" IsOpen="False" />
+
+        <!-- ===== Tabla del menu (antes: dgvMenu) ===== -->
+        <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource Tarjeta}" Padding="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid Style="{StaticResource FilaEncabezado}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="130" />
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="110" />
+                        <ColumnDefinition Width="60" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Id" Style="{StaticResource EncabezadoColumna}" />
+                    <TextBlock Grid.Column="1" Text="Nombre" Style="{StaticResource EncabezadoColumna}" />
+                    <TextBlock Grid.Column="2" Text="Categoría" Style="{StaticResource EncabezadoColumna}" />
+                    <TextBlock Grid.Column="3" Text="Precio" Style="{StaticResource EncabezadoColumna}" />
+                    <TextBlock Grid.Column="4" Text="Costo" Style="{StaticResource EncabezadoColumna}" />
+                    <TextBlock Grid.Column="5" Text="Activo" Style="{StaticResource EncabezadoColumna}" />
+                </Grid>
+
+                <ListView x:Name="dgvMenu" Grid.Row="1"
+                          SelectionMode="Single"
+                          SelectionChanged="DgvMenu_SelectionChanged">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:MenuItem">
+                            <Grid ColumnSpacing="12" Padding="0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="130" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="110" />
+                                    <ColumnDefinition Width="60" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{x:Bind Id}" Style="{StaticResource TextoCelda}" />
+                                <TextBlock Grid.Column="1" Text="{x:Bind Nombre}" Style="{StaticResource TextoCelda}" />
+                                <TextBlock Grid.Column="2" Text="{x:Bind Categoria}" Style="{StaticResource TextoCelda}" />
+                                <TextBlock Grid.Column="3" Text="{x:Bind helpers:Formato.Dinero(Precio)}" Style="{StaticResource TextoCelda}" />
+                                <TextBlock Grid.Column="4" Text="{x:Bind helpers:Formato.DineroONulo(Costo)}" Style="{StaticResource TextoCelda}" />
+                                <TextBlock Grid.Column="5" Text="{x:Bind helpers:Formato.SiNo(Activo)}" Style="{StaticResource TextoCelda}"
+                                           Foreground="{x:Bind helpers:Vista.ColorActivo(Activo)}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </Border>
+
+        <!-- ===== Formulario del producto ===== -->
+        <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource Tarjeta}" VerticalAlignment="Top">
+            <StackPanel Spacing="12">
+                <TextBlock x:Name="lblModo" Text="Nuevo producto" Style="{StaticResource TituloTarjeta}" />
+
+                <TextBox x:Name="txtMenuNombre" Header="Nombre" PlaceholderText="Ej. Tostada Especial" />
+
+                <!-- IsEditable: puedes elegir una categoria o escribir una nueva -->
+                <ComboBox x:Name="cmbMenuCategoria"
+                          Header="Categoría"
+                          IsEditable="True"
+                          PlaceholderText="Elige o escribe una categoría"
+                          HorizontalAlignment="Stretch" />
+
+                <NumberBox x:Name="txtMenuPrecio"
+                           Header="Precio"
+                           PlaceholderText="0.00"
+                           Minimum="0"
+                           SpinButtonPlacementMode="Hidden" />
+
+                <NumberBox x:Name="txtMenuCosto"
+                           Header="Costo (opcional)"
+                           PlaceholderText="Sin capturar"
+                           Description="Lo que cuesta preparar 1 unidad. Sin costo no se calcula la ganancia de este producto."
+                           Minimum="0"
+                           SpinButtonPlacementMode="Hidden" />
+
+                <ToggleSwitch x:Name="chkMenuActivo"
+                              Header="Activo (visible al tomar pedidos)"
+                              OnContent="Sí" OffContent="No"
+                              IsOn="True" />
+
+                <Grid ColumnSpacing="8" RowSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Button x:Name="btnAgregarMenu" Grid.Row="0" Grid.Column="0"
+                            Content="Agregar nuevo" HorizontalAlignment="Stretch"
+                            Style="{StaticResource AccentButtonStyle}"
+                            Click="BtnAgregarMenu_Click" />
+                    <Button x:Name="btnActualizarMenu" Grid.Row="0" Grid.Column="1"
+                            Content="Actualizar" HorizontalAlignment="Stretch"
+                            Click="BtnActualizarMenu_Click" />
+                    <Button x:Name="btnEliminarMenu" Grid.Row="1" Grid.Column="0"
+                            Content="Eliminar (si nunca se vendió)" HorizontalAlignment="Stretch"
+                            Click="BtnEliminarMenu_Click" />
+                    <Button x:Name="btnLimpiarMenu" Grid.Row="1" Grid.Column="1"
+                            Content="Limpiar campos" HorizontalAlignment="Stretch"
+                            Click="BtnLimpiarMenu_Click" />
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Page>

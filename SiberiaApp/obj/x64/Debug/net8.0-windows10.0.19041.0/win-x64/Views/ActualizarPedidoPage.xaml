@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="SiberiaApp.Views.ActualizarPedidoPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:SiberiaApp.Models"
+    xmlns:helpers="using:SiberiaApp.Helpers"
+    NavigationCacheMode="Required">
+
+    <Grid Padding="24,0,24,24" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" MinHeight="160" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <InfoBar x:ConnectionId='2' x:Name="barraAviso" Grid.Row="0" IsOpen="False" />
+
+        <TextBlock Grid.Row="1"
+                   Text="Selecciona un pedido de la lista y define su nuevo estado:"
+                   Style="{StaticResource BodyTextBlockStyle}"
+                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+
+        <!-- ===== Tabla de pedidos ===== -->
+        <Border Grid.Row="2" Style="{StaticResource Tarjeta}" Padding="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid Style="{StaticResource FilaEncabezado}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="130" />
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="130" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Folio" Style="{StaticResource EncabezadoColumna}" />
+                    <TextBlock Grid.Column="1" Text="Cliente" Style="{StaticResource EncabezadoColumna}" />
+                    <TextBlock Grid.Column="2" Text="Atendió" Style="{StaticResource EncabezadoColumna}" />
+                    <TextBlock Grid.Column="3" Text="Fecha" Style="{StaticResource EncabezadoColumna}" />
+                    <TextBlock Grid.Column="4" Text="Total" Style="{StaticResource EncabezadoColumna}" />
+                    <TextBlock Grid.Column="5" Text="Estado" Style="{StaticResource EncabezadoColumna}" />
+                </Grid>
+
+                <ListView x:ConnectionId='13' x:Name="dgvActualizar" Grid.Row="1"
+                          SelectionMode="Single"
+                                                                           >
+                    <ListView.ItemTemplate>
+                        <DataTemplate                               >
+                            <Grid x:ConnectionId='15' ColumnSpacing="12" Padding="0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="160" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="130" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="130" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock x:ConnectionId='16' Grid.Column="0"                       Style="{StaticResource TextoCelda}" />
+                                <TextBlock x:ConnectionId='17' Grid.Column="1"                         Style="{StaticResource TextoCelda}" />
+                                <TextBlock x:ConnectionId='18' Grid.Column="2"                         Style="{StaticResource TextoCelda}" />
+                                <TextBlock x:ConnectionId='19' Grid.Column="3"                       Style="{StaticResource TextoCelda}" />
+                                <TextBlock x:ConnectionId='20' Grid.Column="4"                       Style="{StaticResource TextoCelda}" />
+                                <TextBlock x:ConnectionId='21' Grid.Column="5"                        Style="{StaticResource TextoCelda}"
+                                           FontWeight="SemiBold"
+                                                                                                   />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </Border>
+
+        <!-- ===== Detalle (con notas) y cambio de estado ===== -->
+        <Grid Grid.Row="3" ColumnSpacing="12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="380" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Style="{StaticResource Tarjeta}">
+                <StackPanel>
+                    <TextBlock Text="Detalle del pedido" Style="{StaticResource TituloTarjeta}" />
+                    <TextBox x:ConnectionId='12' x:Name="txtDetalle"
+                             Style="{StaticResource CajaTicket}"
+                             Height="190"
+                             PlaceholderText="Selecciona un pedido para ver sus productos y notas" />
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="1" Style="{StaticResource Tarjeta}">
+                <StackPanel Spacing="12">
+                    <TextBlock x:ConnectionId='3' x:Name="lblFolioSeleccionado"
+                               Text="Pedido seleccionado: (ninguno)"
+                               Style="{StaticResource BodyStrongTextBlockStyle}"
+                               TextWrapping="Wrap" />
+
+                    <ComboBox x:ConnectionId='4' x:Name="cmbNuevoEstado"
+                              Header="Nuevo estado" HorizontalAlignment="Stretch">
+                        <x:String>Pendiente</x:String>
+                        <x:String>En preparacion</x:String>
+                        <x:String>Entregado</x:String>
+                        <x:String>Cancelado</x:String>
+                    </ComboBox>
+
+                    <!-- Explica por que no se puede modificar (otro usuario, ya finalizado, corte cerrado) -->
+                    <TextBlock x:ConnectionId='5' x:Name="lblMotivoBloqueo"
+                               Style="{StaticResource NotaIndicador}"
+                               Visibility="Collapsed" />
+
+                    <Button x:ConnectionId='6' x:Name="btnActualizarEstado"
+                            Content="Actualizar estado del pedido"
+                            Style="{StaticResource AccentButtonStyle}"
+                            HorizontalAlignment="Stretch"
+                                                              />
+
+                    <!-- Solo administrador: dinero devuelto al cliente de un pedido entregado -->
+                    <StackPanel x:ConnectionId='7' x:Name="panelDevolucion" Spacing="8" Visibility="Collapsed">
+                        <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,4" />
+                        <TextBlock Text="Devolución al cliente" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                        <TextBlock x:ConnectionId='8' x:Name="lblDevuelto" Style="{StaticResource NotaIndicador}" />
+                        <NumberBox x:ConnectionId='9' x:Name="txtMontoDevolucion"
+                                   Header="Monto a devolver ($)"
+                                   Minimum="0" Value="0"
+                                   SpinButtonPlacementMode="Hidden" />
+                        <TextBox x:ConnectionId='10' x:Name="txtMotivoDevolucion"
+                                 Header="Motivo"
+                                 PlaceholderText="Ej. producto en mal estado"
+                                 MaxLength="200" />
+                        <Button x:ConnectionId='11' x:Name="btnRegistrarDevolucion"
+                                Content="Registrar devolución"
+                                HorizontalAlignment="Stretch"
+                                IsEnabled="False"
+                                                                     />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Page>
+

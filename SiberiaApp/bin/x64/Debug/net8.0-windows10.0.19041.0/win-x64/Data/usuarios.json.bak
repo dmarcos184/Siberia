@@ -1,0 +1,20 @@
+[
+  {
+    "Id": 1,
+    "NombreUsuario": "admin",
+    "PasswordHash": "PBKDF2$100000$GfRuTbg/55LtPCEQOxZVhw==$xNIV/e9dIaa01+z5WkCnD44UX8WOZOR9e071GGBtR04=",
+    "Rol": "Administrador",
+    "Activo": true,
+    "DebeCambiarPassword": false,
+    "FechaCreacion": "2026-11-08T22:12:00.0556878-06:00"
+  },
+  {
+    "Id": 2,
+    "NombreUsuario": "Jorge Gomez",
+    "PasswordHash": "PBKDF2$100000$iHVPjDn4xmaMveAUlp6Ahg==$xrb3Nzf6C1YyqmX4cmmoIjvpgFkVwf5vIZol5xnKYUE=",
+    "Rol": "Cajero",
+    "Activo": true,
+    "DebeCambiarPassword": true,
+    "FechaCreacion": "2026-11-08T22:12:56.2513014-06:00"
+  }
+]

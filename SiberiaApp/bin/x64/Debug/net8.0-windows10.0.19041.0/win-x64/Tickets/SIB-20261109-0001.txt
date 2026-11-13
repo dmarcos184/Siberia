@@ -1,0 +1,19 @@
+﻿========================================
+            SIBERIA - TICKET
+========================================
+Folio:      SIB-20261109-0001
+Fecha:      09/11/2026 18:14
+Cliente:    Aldo
+Tipo:       Mostrador
+----------------------------------------
+ 1 x Ensalada Pollo       $ 125.00
+      - 1 Sin Verdura
+ 1 x Taco Especial Junior $  50.00
+      - 1 sin crema
+----------------------------------------
+TOTAL:                        $ 175.00
+Pago: Tarjeta
+========================================
+       Atendio: Jorge Gomez
+      ¡Gracias por su compra!
+========================================

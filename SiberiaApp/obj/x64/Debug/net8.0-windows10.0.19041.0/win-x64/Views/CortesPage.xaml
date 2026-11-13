@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="SiberiaApp.Views.CortesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:SiberiaApp.Models"
+    xmlns:services="using:SiberiaApp.Services"
+    xmlns:helpers="using:SiberiaApp.Helpers"
+    NavigationCacheMode="Required">
+
+    <Grid Padding="24,0,24,24" ColumnSpacing="16" RowSpacing="12">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" MinWidth="320" />
+            <ColumnDefinition Width="3*" MinWidth="420" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" MinHeight="200" />
+            <RowDefinition Height="*" MinHeight="260" />
+        </Grid.RowDefinitions>
+
+        <InfoBar x:ConnectionId='2' x:Name="barraAviso" Grid.Row="0" Grid.ColumnSpan="2" IsOpen="False" />
+
+        <!-- ===== Dias por cerrar ===== -->
+        <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource Tarjeta}" Padding="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <StackPanel Margin="16,16,16,8">
+                    <TextBlock Text="Días por cerrar" Style="{StaticResource TituloTarjeta}" Margin="0" />
+                    <TextBlock x:ConnectionId='33' x:Name="lblAyudaDias" Style="{StaticResource NotaIndicador}" />
+                </StackPanel>
+
+                <TextBlock x:ConnectionId='22' x:Name="lblSinDias" Grid.Row="1"
+                           Text="No hay días pendientes de cierre."
+                           Style="{StaticResource NotaIndicador}"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+                <ListView x:ConnectionId='23' x:Name="lstDias" Grid.Row="1"
+                          SelectionMode="Single"
+                                                                     >
+                    <ListView.ItemTemplate>
+                        <DataTemplate                                   >
+                            <Grid x:ConnectionId='25' ColumnSpacing="12" Padding="0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock x:ConnectionId='30'                                             
+                                               Style="{StaticResource BodyStrongTextBlockStyle}" />
+                                    <TextBlock Style="{StaticResource EtiquetaIndicador}">
+                                        <Run x:ConnectionId='31'                               /><Run Text=" · " /><Run x:ConnectionId='32'                         /><Run Text=" pedidos" />
+                                    </TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                    <TextBlock x:ConnectionId='26'                                                   TextAlignment="Right" />
+                                    <TextBlock x:ConnectionId='27' Style="{StaticResource EtiquetaIndicador}" TextAlignment="Right"
+                                                                                                           
+                                               Text="Listo para cerrar" />
+                                    <TextBlock x:ConnectionId='28' Style="{StaticResource EtiquetaIndicador}" TextAlignment="Right"
+                                                                                                             
+                                                                                                           >
+                                        <Run x:ConnectionId='29'                              /><Run Text=" sin finalizar" />
+                                    </TextBlock>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </Border>
+
+        <!-- ===== Historial ===== -->
+        <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource Tarjeta}" Padding="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Margin="16,16,16,8" Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="Historial de cortes" Style="{StaticResource TituloTarjeta}"
+                               VerticalAlignment="Center" Margin="0,0,12,0" />
+                    <!-- Los filtros por usuario son solo del administrador -->
+                    <ComboBox x:ConnectionId='17' x:Name="cmbUsuarioFiltro" Width="150" DisplayMemberPath="Nombre"
+                              PlaceholderText="Usuario" Visibility="Collapsed" />
+                    <CalendarDatePicker x:ConnectionId='18' x:Name="dtpDesde" PlaceholderText="Desde" Width="130"
+                                        DateFormat="{}{day.integer(2)}/{month.integer(2)}/{year.full}" />
+                    <CalendarDatePicker x:ConnectionId='19' x:Name="dtpHasta" PlaceholderText="Hasta" Width="130"
+                                        DateFormat="{}{day.integer(2)}/{month.integer(2)}/{year.full}" />
+                    <Button x:ConnectionId='20' x:Name="btnFiltrar" Content="Filtrar"                          />
+                    <Button x:ConnectionId='21' x:Name="btnQuitarFiltros" Content="Quitar filtros"                                />
+                </StackPanel>
+
+                <Grid Grid.Row="1" Style="{StaticResource FilaEncabezado}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="70" />
+                        <ColumnDefinition Width="110" />
+                        <ColumnDefinition Width="80" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Día" Style="{StaticResource EncabezadoColumna}" />
+                    <TextBlock Grid.Column="1" Text="Usuario" Style="{StaticResource EncabezadoColumna}" />
+                    <TextBlock Grid.Column="2" Text="Pedidos" Style="{StaticResource EncabezadoColumna}" />
+                    <TextBlock Grid.Column="3" Text="Total neto" Style="{StaticResource EncabezadoColumna}" />
+                    <TextBlock Grid.Column="4" Text="Estado" Style="{StaticResource EncabezadoColumna}" />
+                </Grid>
+
+                <ListView x:ConnectionId='9' x:Name="lstHistorial" Grid.Row="2"
+                          SelectionMode="Single"
+                                                                          >
+                    <ListView.ItemTemplate>
+                        <DataTemplate                          >
+                            <Grid x:ConnectionId='11' ColumnSpacing="12" Padding="0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="110" />
+                                    <ColumnDefinition Width="80" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock x:ConnectionId='12' Grid.Column="0"                                              Style="{StaticResource TextoCelda}" />
+                                <TextBlock x:ConnectionId='13' Grid.Column="1"                               Style="{StaticResource TextoCelda}" />
+                                <TextBlock x:ConnectionId='14' Grid.Column="2"                              Style="{StaticResource TextoCelda}" />
+                                <TextBlock x:ConnectionId='15' Grid.Column="3"                                                   Style="{StaticResource TextoCelda}" />
+                                <TextBlock x:ConnectionId='16' Grid.Column="4"                        Style="{StaticResource TextoCelda}"
+                                           FontWeight="SemiBold"
+                                                                                                  />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </Border>
+
+        <!-- ===== Detalle y acciones ===== -->
+        <Border Grid.Row="2" Grid.ColumnSpan="2" Style="{StaticResource Tarjeta}">
+            <Grid ColumnSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="320" />
+                </Grid.ColumnDefinitions>
+
+                <Grid RowSpacing="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Detalle del corte" Style="{StaticResource TituloTarjeta}" Margin="0" />
+                    <TextBox x:ConnectionId='8' x:Name="txtDetalleCorte" Grid.Row="1"
+                             Style="{StaticResource CajaTicket}"
+                             PlaceholderText="Selecciona un día por cerrar o un corte del historial" />
+                </Grid>
+
+                <StackPanel Grid.Column="1" Spacing="12">
+                    <TextBox x:ConnectionId='3' x:Name="txtObservaciones"
+                             Header="Observaciones del corte (opcional)"
+                             AcceptsReturn="True" TextWrapping="Wrap"
+                             MinHeight="90" MaxLength="300"
+                             IsEnabled="False" />
+
+                    <Button x:ConnectionId='4' x:Name="btnCerrarCorte"
+                            Style="{StaticResource AccentButtonStyle}"
+                            HorizontalAlignment="Stretch"
+                            IsEnabled="False"
+                                                        >
+                        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                            <ProgressRing x:ConnectionId='7' x:Name="anilloCierre" Width="16" Height="16" IsActive="False" Visibility="Collapsed" />
+                            <TextBlock Text="Cerrar corte del día seleccionado" />
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Solo administradores -->
+                    <Button x:ConnectionId='5' x:Name="btnReabrirCorte"
+                            Content="Reabrir corte seleccionado"
+                            HorizontalAlignment="Stretch"
+                            Visibility="Collapsed"
+                            IsEnabled="False"
+                                                          />
+
+                    <TextBlock x:ConnectionId='6' x:Name="lblMotivoCorte" Style="{StaticResource NotaIndicador}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>
+
